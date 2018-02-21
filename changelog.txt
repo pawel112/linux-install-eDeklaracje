@@ -1,0 +1,2 @@
+21.02.2018 v. 1.0.1 Change dependences
+20.02.2018 v. 1.0.0 First version
