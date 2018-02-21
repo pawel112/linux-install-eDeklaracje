@@ -13,5 +13,8 @@ Rozlicz PIT na Linuxie (testowano na Ubuntu 17.10)
     sudo dpkg -i AdbeRdr9.5.5-1_i386linux_enu.deb
     sudo apt-get install -f
     
-    wget https://github.com/pawel112/linux-install-eDeklaracje/raw/master/e-deklaracje-installer_1.0.0_all.deb
-    sudo dpkg -i e-deklaracje-installer_1.0.0_all.deb
+    wget https://github.com/pawel112/linux-install-eDeklaracje/raw/master/e-deklaracje-installer.deb
+    sudo dpkg -i e-deklaracje-installer.deb
+    sudo apt-get install -f
+
+Przy tworzeniu skryptu wykorzystałem instrukcję ze strony https://nocnypingwin.pl/e-deklaracje-pod-linuxem-2017/.
