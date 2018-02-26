@@ -103,7 +103,7 @@ function installLibs() {
 ## @brief Function install Adobe Air
 function installAdobeAir() {
     wget http://airdownload.adobe.com/air/lin/download/2.6/AdobeAIRSDK.tbz2 #2.6
-    wget https://github.com/pawel112/linux-install-eDeklaracje/blob/master/adobe-air.tar.gz #latest
+    wget https://github.com/pawel112/linux-install-eDeklaracje/raw/master/adobe-air.tar.gz #latest
     mkdir /opt/Adobe/Air
     tar jxf AdobeAIRSDK.tbz2 -C /opt/Adobe/Air
 
