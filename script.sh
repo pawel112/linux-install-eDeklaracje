@@ -150,7 +150,7 @@ function installeDeklaracje() {
     cd e-deklaracje
     unzip e-DeklaracjeDesktop.air
     cp assets/icons/icon128.png /opt/e-deklaracje/e-deklaracje.png
-    cp ..
+    cd ..
 
     cat <<__CONF__ | tee $HOME/.local/share/applications/e-deklaracje.desktop
 [Desktop Entry]
