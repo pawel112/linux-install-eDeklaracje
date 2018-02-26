@@ -1,7 +1,7 @@
 [DEBREATE-0.7.13]
 <<CTRL>>
 Package: e-deklaracje-installer
-Version: 1.0.1
+Version: 1.0.3
 Maintainer: Paweł Roszatycki <pawel@roszatycki.pl>
 Source: https://github.com/pawel112/linux-install-eDeklaracje
 Homepage: https://github.com/pawel112/linux-install-eDeklaracje
@@ -28,6 +28,20 @@ Description: Install e-Deklaracje from Ministry of Finance in Poland
 ## @copyright GNU GPL v3
 ## @version 1.0.0
 ##
+
+## @fn checkDirExists
+## @brief Function directory file exist
+## @param ${1} – directory ex. ‘abc’
+## @param ${2} – return variable
+## @return true if the directory is exist, otherwise false
+function checkDirExists() {
+    if [ -d "$DIRECTORY" ]
+    then
+        eval ${2}="'1'"
+    else
+        eval ${2}="'0'"
+    fi
+}
 
 ## @fn checkFileExists
 ## @brief Function check file exist
@@ -72,7 +86,7 @@ function checkRoot() {
 ## @brief Function install Adobe Air
 function installAdobeAir() {
     wget http://airdownload.adobe.com/air/lin/download/2.6/AdobeAIRSDK.tbz2 #2.6
-    wget https://github.com/pawel112/linux-install-eDeklaracje/blob/master/adobe-air.tar.gz #latest
+    wget https://github.com/pawel112/linux-install-eDeklaracje/raw/master/adobe-air.tar.gz #latest
     mkdir /opt/Adobe/Air
     tar jxf AdobeAIRSDK.tbz2 -C /opt/Adobe/Air
 
@@ -112,32 +126,50 @@ function installAdobeReader() {
 ## @brief Function install e-Deklaracje
 function installeDeklaracje() {
     wget http://www.finanse.mf.gov.pl/documents/766655/1196444/e-DeklaracjeDesktop.air #latest
-    mkdir e-deklaracje
-    mkdir /opt/e-deklaracje
+    
+    checkDirExists 'e-deklaracje' result
+
+    if [ "$result" -eq "0" ];
+    then
+        mkdir e-deklaracje
+    fi
+
+    checkDirExists '/opt/e-deklaracje' result
+
+    if [ "$result" -eq "0" ];
+    then
+        mkdir /opt/e-deklaracje
+    fi
+
     cp e-DeklaracjeDesktop.air /opt/e-deklaracje/
     mv e-DeklaracjeDesktop.air e-deklaracje/e-DeklaracjeDesktop.air
     cd e-deklaracje
-    unzip e-DeklaracjeDesktop.air
+    unzip -o e-DeklaracjeDesktop.air
     cp assets/icons/icon128.png /opt/e-deklaracje/e-deklaracje.png
-    cd ..
-
-    cat <<__CONF__ | tee $HOME/.local/share/applications/e-deklaracje.desktop
-[Desktop Entry]
-Type=Application
-Terminal=false
-Categories=Office
-Exec=/opt/Adobe/Air/adobe-air/adobe-air /opt/e-deklaracje/e-DeklaracjeDesktop.air
-Icon=/opt/e-deklaracje/e-deklaracje.png
-Name=e-Deklaracje
-__CONF__
-
-	chmod +x $HOME/.local/share/applications/e-deklaracje.desktop
-
-	checkFileExists '/opt/e-deklaracje/e-DeklaracjeDesktop.air' result
+    checkFileExists '/opt/e-deklaracje/e-DeklaracjeDesktop.air' result
 
     if [ "$result" -eq "0" ];
     then
         echo "e-Deklaracje installed failed"
+        exit 1
+    fi
+}
+
+## @fn uninstallDeklaracje
+## @brief Function uninstall e-Deklaracje
+function uninstallDeklaracje() {
+    checkDirExists '/opt/e-deklaracje/' result
+
+    if [ "$result" -eq "1" ];
+    then
+        rm /opt/e-deklaracje/ -r
+    fi
+
+    checkFileExists '/opt/e-deklaracje/e-DeklaracjeDesktop.air' result
+
+    if [ "$result" -eq "1" ];
+    then
+        echo "e-Deklaracje uninstall failed"
         exit 1
     fi
 }
@@ -176,6 +208,7 @@ function clean() {
 
 clean
 checkRoot
+uninstallDeklaracje
 installAdobeAir
 installeDeklaracje
 clean
@@ -250,8 +283,6 @@ function uninstallAdobeAir() {
 ## @brief Function uninstall e-Deklaracje
 function uninstallDeklaracje() {
     rm /opt/e-deklaracje/ -r
-    rm $HOME/.local/share/applications/e-deklaracje.desktop
-
     checkFileExists '/opt/e-deklaracje/e-DeklaracjeDesktop.air' result
 
     if [ "$result" -eq "1" ];
@@ -947,7 +978,16 @@ Public License instead of this License.  But first, please read
 <http://www.gnu.org/philosophy/why-not-lgpl.html>.
 <</COPYRIGHT>>
 <<MENU>>
-0
+1
+Name=e-Deklaracje
+Version=1.0
+Exec=/opt/Adobe/Air/adobe-air/adobe-air /opt/e-deklaracje/e-DeklaracjeDesktop.air
+Icon=/opt/e-deklaracje/e-deklaracje.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=Office;
 <</MENU>>
 <<BUILD>>
 1
